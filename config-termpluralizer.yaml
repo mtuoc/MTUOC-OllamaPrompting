@@ -1,0 +1,42 @@
+# --- FILE AND DATA SETTINGS ---
+
+file_settings:
+  input_filename: consulteca-uniq.txt
+  output_filename: consulteca-uniq-plurals.txt
+  delimiter: '\t' # Separator: '\t' (tab)
+
+# --- OLLAMA API SETTINGS ---
+
+ollama_settings:
+  model: "mistral" # Ollama model (e.g., mistral, llama3, phi3)
+  url: "http://localhost:11434"
+  timeout: 5 # Connection timeout in seconds
+  temperature: 0.0
+
+# --- LANGUAGE SETTINGS ---
+
+language_settings:
+  source_lang_name: "Spanish"
+  target_lang_name: "Catalan"
+
+# --- LLM PROMPT AND RESPONSE PARSING ---
+
+prompt_settings:
+  # The prompt template uses {lang} and {term} placeholders, which will be replaced in the script.
+  prompt_template: |
+    You are a linguistic expert. Your task is to provide the correct plural form of a given term.
+    
+    Term to pluralize in {lang}): '{term}'
+    
+    INSTRUCTIONS:
+    1. Analyze the term and determine its correct plural form.
+    2. Strictly format your entire output as a single XML structure using the tags <answer> and <plural>.
+    3. DO NOT include any explanation, introductory phrases, punctuation outside the XML tags, or added information.
+    
+    EXPECTED OUTPUT FORMAT (STRICTLY ADHERE TO THIS):
+    <answer><plural>your plural form here</plural></answer>
+    
+
+  # Regex to extract the plural form from the XML response.
+  # It captures the content between the <plural>...</plural> tags.
+  regex_pattern: "<plural>(.*?)</plural>"
