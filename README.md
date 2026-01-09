@@ -22,7 +22,11 @@ ollama_settings:
   model: "mistral"
   url: "http://localhost:11434"
   timeout: 5 
-  temperature: 0.0
+  temperature: 0.0      # Lower values (min 0.0) are more deterministic; higher values are more creative.
+  num_ctx: 2048         # Sets the size of the context window used to generate the next token.
+  repeat_penalty: 1.2   # Sets how strongly to penalize repetitions.
+  top_k: 40             # Reduces the probability of generating nonsense (higher = more diverse).
+  top_p: 0.9            # Works with top-k; a higher value (e.g., 0.95) leads to more diverse text.
 
 # --- LLM PROMPT AND RESPONSE PARSING ---
 
@@ -70,3 +74,29 @@ We can use a `regex_pattern` to extract the required information from the respon
 We can run the script:
 
 `python3 MTUOC-OllamaFP.py example1.yaml`
+
+It is possible to specify more than one parameter in the input file. In this example, we add a first parameter to speficy the target language:
+
+```
+Catalan 	В уездном городе N было так много парикмахерских заведений и бюро похоронных процессий, что казалось, жители города рождаются лишь затем, чтобы побриться, остричься, освежить голову вежеталем и сразу же умереть. 
+Spanish 	А на самом деле в уездном городе N люди рождались, брились и умирали довольно редко. 
+English 	Жизнь города N была тишайшей. 
+French 	Весенние вечера были упоительны, грязь под луною сверкала, как антрацит, и вся молодежь города до такой степени была влюблена в секретаршу месткома коммунальников, что это мешало ей собирать членские взносы.
+```
+
+Please, note that now we should to change the `promt_template` in the configuration file:
+
+```
+  prompt_template: |
+    You're an experienced Russian-{P[0]} translator. Translate this sentence from Russian to {P[0]}. Provide the translation and nothing else. Don't add any note nor any explanation.
+    Russian: {P[1]}
+    P[0]:
+```
+We use {P[0]} for the first parameter (the target language) and {P[1]} for the secong paramenter, the source segment. Noy the output will include two inpuyt parameters and the response:
+
+```
+Catalan 	В уездном городе N было так много парикмахерских заведений и бюро похоронных процессий, что казалось, жители города рождаются лишь затем, чтобы побриться, остричься, освежить голову вежеталем и сразу же умереть. 	A la vila de N del districte hi havia tant d'establiments de tallers de pelatges i oficines de processions funeràries que semblava que els habitants de la ciutat només naixien per a ser pelats, esmenar-se, refrescar el cap amb un ventall i morir immediatament.  (Note: The sentence is quite figurative and the translation tries to preserve that aspect.)
+Spanish 	А на самом деле в уездном городе N люди рождались, брились и умирали довольно редко. 	En verdad, en la ciudad distrital, se nacían, afeitaban y morían relativamente pocas veces personas N.
+English 	Жизнь города N была тишайшей. 	Life in city N was quietest.
+French 	Весенние вечера были упоительны, грязь под луною сверкала, как антрацит, и вся молодежь города до такой степени была влюблена в секретаршу месткома коммунальников, что это мешало ей собирать членские взносы.	Les soirées printanières étaient ravissantes, la boue sous lune brillait comme de l'anthracite et toute la jeunesse de la ville était si amoureuse de la secrétaire du comité des communards qu'elle en empêchait même d'en collecter les cotisations.
+```
