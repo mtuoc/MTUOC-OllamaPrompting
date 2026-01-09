@@ -6,7 +6,7 @@ Scripts to perform automatic queries to LLMs using Ollama. The idea is to make a
 
 ## Script with fixed prompt
 
-The script with a fixed prompt is MTUOC-OllamaFP.py. Fixed prompt means that the prompt is specified in the YAML configuration file and that this prompt will be used in all the queries. The YAML configuration file has the following parameters:
+The script with a fixed prompt is MTUOC-OllamaFP.py. Fixed prompt means that the prompt is specified in the YAML configuration file and that this prompt will be used in all the queries. The YAML configuration file has the following parameters (example1.yaml):
 
 ```
 # --- FILE AND DATA SETTINGS ---
@@ -59,28 +59,14 @@ The output file translated.txt would contain:
 
 Please, note that the output file will contain the source sentences and the target sentences separated by the `delimiter`. In this case the file contains only one parameter, the source sentence.
 
-in `file_settings` we can specify the `input_filename` (that contains the parameters of each query, one query per line) and the `output_filename` (that will contain queries parameters and the response of the query) using the `delimiter`-
+In `file_settings` we can specify the `input_filename` (that contains the parameters of each query, one query per line) and the `output_filename` (that will contain queries parameters and the response of the query) using the `delimiter`-
 
+In `ollama_settings`we can set the `model` (any of the modellos available in [Ollama](https://ollama.com/search), the `url`of the Ollama server (if it is running locally by default "http://localhost:11434", the `timeout` and the `temperature`.
 
-  
-# --- OLLAMA API SETTINGS ---
+In `prompt_settings` we can specify the `prompt_template`. You can use any number of paramenters in P and use P[0], P[1] ... in the template. The number of parameters must match with the number of parameters in the `input_file` (the fields of the file lines using the `delimiter` as separator.
 
-ollama_settings:
-  model: "mistral"
-  url: "http://localhost:11434"
-  timeout: 5 
-  temperature: 0.0
+We can use a `regex_pattern` to extract the required information from the response, or None to get the whole response.
 
-# --- LLM PROMPT AND RESPONSE PARSING ---
+We can run the script:
 
-prompt_settings:
-  # The prompt template uses the list P, which will be replaced in the script by P[0], P[1]...
-  prompt_template: |
-    You're an experienced Russian-Catalan translator. Translate this sentence from Russian to Catalan. Provide the translation and nothing else. Don't add any note nor any explanation.
-    Russian: {P[0]}
-    Catalan: 
-    
-    
-
-  # Regex to extract the answer or None if no regex is required
-  regex_pattern: None
+`python3 MTUOC-OllamaFP.py example1.yaml`
