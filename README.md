@@ -59,4 +59,28 @@ The output file translated.txt would contain:
 
 Please, note that the output file will contain the source sentences and the target sentences separated by the `delimiter`. In this case the file contains only one parameter, the source sentence.
 
-We can specify
+in `file_settings` we can specify the `input_filename` (that contains the parameters of each query, one query per line) and the `output_filename` (that will contain queries parameters and the response of the query) using the `delimiter`-
+
+
+  
+# --- OLLAMA API SETTINGS ---
+
+ollama_settings:
+  model: "mistral"
+  url: "http://localhost:11434"
+  timeout: 5 
+  temperature: 0.0
+
+# --- LLM PROMPT AND RESPONSE PARSING ---
+
+prompt_settings:
+  # The prompt template uses the list P, which will be replaced in the script by P[0], P[1]...
+  prompt_template: |
+    You're an experienced Russian-Catalan translator. Translate this sentence from Russian to Catalan. Provide the translation and nothing else. Don't add any note nor any explanation.
+    Russian: {P[0]}
+    Catalan: 
+    
+    
+
+  # Regex to extract the answer or None if no regex is required
+  regex_pattern: None
