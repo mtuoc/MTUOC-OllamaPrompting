@@ -1,0 +1,32 @@
+# --- FILE AND DATA SETTINGS ---
+
+file_settings:
+  input_filename: totranslate2.txt
+  output_filename: translated2.txt
+  delimiter: '\t' 
+  
+# --- OLLAMA API SETTINGS ---
+
+ollama_settings:
+  model: "mistral"
+  url: "http://localhost:11434"
+  timeout: 5 
+  temperature: 0.0      # Lower values (min 0.0) are more deterministic; higher values are more creative.
+  num_ctx: 2048         # Sets the size of the context window used to generate the next token.
+  repeat_penalty: 1.2   # Sets how strongly to penalize repetitions.
+  top_k: 40             # Reduces the probability of generating nonsense (higher = more diverse).
+  top_p: 0.9            # Works with top-k; a higher value (e.g., 0.95) leads to more diverse text.
+
+# --- LLM PROMPT AND RESPONSE PARSING ---
+
+prompt_settings:
+  # The prompt template uses the list P, which will be replaced in the script by P[0], P[1]...
+  prompt_template: |
+    You're an experienced Russian-{P[0]} translator. Translate this sentence from Russian to {P[0]}. Provide the translation and nothing else. Don't add any note nor any explanation.
+    Russian: {P[1]}
+    P[0]: 
+    
+    
+
+  # Regex to extract the answer or None if no regex is required
+  regex_pattern: None
